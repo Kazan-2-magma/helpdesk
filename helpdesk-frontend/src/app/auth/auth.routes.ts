@@ -1,0 +1,15 @@
+import { Routes } from '@angular/router';
+import { LoginComponent } from './login/login';
+
+
+export const AUTH_ROUTES: Routes = [
+    {
+        path: '',
+        children: [
+            { path: 'login', component: LoginComponent },
+            // { path: 'register', component: RegisterComponent },
+            { path: '**', redirectTo: 'login' }
+
+        ]
+    }
+];

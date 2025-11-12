@@ -1,0 +1,16 @@
+.parent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    height: 100%;
+}
+.child {
+   
+    background-color: purple;
+}
+
+h1 {
+    color: red;
+    font-size: 100px;
+}

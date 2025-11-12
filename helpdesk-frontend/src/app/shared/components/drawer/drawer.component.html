@@ -1,0 +1,9 @@
+<p-drawer class="z-20" [style]="{'background-color': '#1f2937', 'color': 'white'}"
+    [(visible)]="visible"
+    (onHide)="onHide()"
+    
+    [header]="drawerHeader" position="right">
+    <ng-content></ng-content>
+</p-drawer>
+<p-button (click)="toggle()" 
+        variant="text" severity="info" [label]="buttonLabel" />
