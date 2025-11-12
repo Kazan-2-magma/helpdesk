@@ -2,33 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\V1\FaqFilters;
+use App\Http\Requests\FaqStoreRequest;
+use App\Http\Requests\FaqUpdateRequest;
+use App\Http\Resources\FaqResource;
 use App\Models\Faq;
-use Illuminate\Http\Request;
 
-class FaqController extends Controller
+
+class FaqController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(FaqFilters $filters)
     {
-        //
+        return FaqResource::collection(Faq::filter($filters)->paginate());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(FaqStoreRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+
+        $faq = Faq::updateOrCreate($validatedData);
+
+        return $this->success($faq, "FAQ created successfully", 201);
     }
 
     /**
@@ -36,23 +34,25 @@ class FaqController extends Controller
      */
     public function show(Faq $faq)
     {
-        //
-    }
+        if ($this->include("category")) {
+            return new FaqResource($faq->load("category"));
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Faq $faq)
-    {
-        //
+        return new FaqResource($faq);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Faq $faq)
+    public function update(FaqUpdateRequest $request, Faq $faq)
     {
-        //
+        $faq->update($request->validated());
+
+       
+        $faq->load('category');
+
+        
+        return $this->success(new FaqResource($faq), "FAQ updated successfully");
     }
 
     /**
@@ -60,6 +60,10 @@ class FaqController extends Controller
      */
     public function destroy(Faq $faq)
     {
-        //
+        if(!$faq){
+            return $this->error("Error : Faq Not found");
+        }
+        $faq->delete();
+        return $this->success("Faq deleted successfully");
     }
 }

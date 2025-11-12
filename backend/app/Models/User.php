@@ -5,7 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Enums\UserRole;
+use App\Http\Filters\V1\QueryFilters;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -46,4 +49,13 @@ class User extends Authenticatable
         'password' => 'hashed',
         'role' => UserRole::class,
     ];
+    
+    public function scopeFilter(Builder $builder, QueryFilters $filter)
+    {
+        return $filter->apply($builder);
+    }
+
+    public function tickets() : HasMany{
+        return $this->hasMany(Ticket::class);
+    }
 }

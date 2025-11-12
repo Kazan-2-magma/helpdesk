@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Traits\ApiResponse;
-use Illuminate\Contracts\Validation\Validator;
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Enum;
 
-class LoginRequest extends ApiRequest
+class UserUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,17 +24,10 @@ class LoginRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            "email" => "required|email|exists:users,email",
-            "password" => "required|string",
-        ];
-    }
-
-
-    public function messages()
-    {
-        return [
-            "email.exists" => "No account found with this email.",
-            'password.required' => 'Please enter your password.',
+            "name" => "sometimes|required|string|max:100",
+            "email" => "sometimes|required|unique:users,email",
+            'password' => 'sometimes|required|string|min:8|confirmed',
+            'role' => ['sometimes','required', new Enum(UserRole::class)],
         ];
     }
 }
