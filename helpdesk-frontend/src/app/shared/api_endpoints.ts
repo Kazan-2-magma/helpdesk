@@ -9,4 +9,7 @@ export class ApiEndpoints {
     static ADMIN_CATEGORY = "admin/categories";
     
     static TICKETS = "tickets";
+
+    /// USER
+    static USER_TICKETS = "user/userTickets";
 }

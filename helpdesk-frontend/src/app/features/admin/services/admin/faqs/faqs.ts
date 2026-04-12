@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { ApiService } from '../../../../core/services/api.service';
+import { ApiService } from '../../../../../core/services/api.service';
+import { Faq, JsonApiResponse, PaginatedResponse } from '../../../../../shared/interfaces';
 import { Observable } from 'rxjs';
-import { Faq, JsonApiResponse, PaginatedResponse } from '../../../../shared/interfaces';
-import { ApiEndpoints } from '../../../../shared/api_endpoints';
+import { ApiEndpoints } from '../../../../../shared/api_endpoints';
+
 
 @Injectable({
   providedIn: 'root'

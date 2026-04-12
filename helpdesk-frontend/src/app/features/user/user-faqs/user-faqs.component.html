@@ -1,0 +1,42 @@
+<div class="p-6">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      Frequently Asked Questions
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      Find answers to common questions about our helpdesk
+    </p>
+  </div>
+
+  @if (loading && (faqs$ | async)?.length === 0) {
+    <div class="flex justify-center py-12">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"
+      ></div>
+    </div>
+  } @else if ((faqs$ | async)?.length === 0) {
+    <div
+      class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 text-center"
+    >
+      <p class="text-yellow-800 dark:text-yellow-200 font-medium">
+        No FAQs available at the moment
+      </p>
+    </div>
+  } @else {
+    <div class="space-y-4">
+      <!-- <app-accordion [items]="(faqs$ | async) || []"></app-accordion> -->
+    </div>
+
+    @if (!lastPage) {
+      <div class="flex justify-center mt-8">
+        <button
+          (click)="loadMore()"
+          [disabled]="loading"
+          class="px-6 py-2 bg-primary-500 hover:bg-primary-600 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+        >
+          {{ loading ? "Loading..." : "Load More" }}
+        </button>
+      </div>
+    }
+  }
+</div>

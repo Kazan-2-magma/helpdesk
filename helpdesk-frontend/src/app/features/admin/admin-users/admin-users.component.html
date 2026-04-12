@@ -85,7 +85,7 @@
     </div>
 
     <!-- Table -->
-    <app-basic-table-three [data]="(users$ | async) ?? []" [loadingMore]="loadingMore" (loadMore)="onLoadMore()">
+    <app-basic-table-three [data]="(users$ | async) ?? []" [loadingMore]="loadingMore" (loadMore)="onLoadMore()" [fullLoading]="loading">
         <tr table-head>
             <th class="py-3 px-4 text-left text-gray-500 text-sm font-normal">ID</th>
             <th class="py-3 px-4 text-left text-gray-500 text-sm font-normal">User Info</th>

@@ -8,6 +8,8 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    password : string;
+    password_confirmation:string;
     role: ROLE.ADMIN | ROLE.AGENT | ROLE.USER
 }
 
@@ -51,7 +53,7 @@ export interface Faq extends HasIncludes <{id:number,name:string}>{
 }
 
 export interface Ticket extends HasIncludes<{user:User,agent:User,category:Category}>{
-    id: string;
+    id: number;
     title: string;
     description: string;
     priority: 'low' | 'medium' | 'high';

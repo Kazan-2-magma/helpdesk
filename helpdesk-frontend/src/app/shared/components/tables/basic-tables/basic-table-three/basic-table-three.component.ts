@@ -20,12 +20,13 @@ export class BasicTableThreeComponent {
 
   @Input() data: any[] = [];
   @Input() loadingMore: boolean = false;
+  @Input() fullLoading: boolean = false;
 
 
   @Output() loadMore = new EventEmitter<void>();
 
   onScrollDown() {
-    if (!this.loadingMore) {
+    if (!this.loadingMore && !this.fullLoading) {
       this.loadMore.emit();
     }
   }

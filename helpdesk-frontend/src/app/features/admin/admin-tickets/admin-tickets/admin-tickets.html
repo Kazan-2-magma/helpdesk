@@ -99,6 +99,7 @@
     </div>
 <!-- [loadingMore]="loadingMore" (loadMore)="onLoadMore() -->
     <app-basic-table-three [data]="(tickets$ | async) ?? []" 
+        [fullLoading]="loading"
         [loadingMore]="loadingMore" (loadMore)="onLoadMore()">
 
         <tr table-head>

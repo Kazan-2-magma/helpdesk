@@ -15,6 +15,7 @@ export enum TICKET_STATUS {
 }
 
 export const TICKET_STATUS_LIST = [
+    { label: 'All', value: "All",active : true },
     { label: 'Open', value: TICKET_STATUS.OPEN,active : false },
     { label: 'Resolved', value: TICKET_STATUS.RESOLVED,active : false },
     { label: 'Closed', value: TICKET_STATUS.CLOSED,active : false }
