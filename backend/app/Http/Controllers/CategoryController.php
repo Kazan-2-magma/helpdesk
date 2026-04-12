@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\V1\CategoriyFilter;
+use App\Http\Requests\CategoryStoreRequest;
+use App\Http\Requests\CategoryUpdateRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -11,9 +14,9 @@ class CategoryController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(CategoriyFilter $categoriyFilter)
     {
-        return CategoryResource::collection(Category::all());
+        return CategoryResource::collection(Category::filter($categoriyFilter)->paginate());
     }
 
     /**
@@ -27,9 +30,13 @@ class CategoryController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryStoreRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+
+        $category = Category::create($validatedData);
+
+        return $this->success($category, "Category created successfully", 201);
     }
 
     /**
@@ -37,7 +44,7 @@ class CategoryController extends ApiController
      */
     public function show(Category $category)
     {
-        //
+        return new CategoryResource($category);
     }
 
     /**
@@ -51,9 +58,11 @@ class CategoryController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryUpdateRequest $request, Category $category)
     {
-        //
+        $category->update($request->validated());
+
+        return $this->success(new CategoryResource($category), "Category updated successfully");
     }
 
     /**
@@ -61,6 +70,12 @@ class CategoryController extends ApiController
      */
     public function destroy(Category $category)
     {
-        //
+        if (!$category) {
+            return $this->error("Error: Category not found");
+        }
+
+        $category->delete();
+
+        return $this->success("Category deleted successfully");
     }
 }

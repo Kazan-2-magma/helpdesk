@@ -2,6 +2,8 @@
 
 namespace App\Http\Filters\V1;
 
+use Illuminate\Support\Facades\Log;
+
 class UserFilters extends QueryFilters {
 
     public function include($value){
@@ -9,7 +11,7 @@ class UserFilters extends QueryFilters {
     }
 
     public function userFilter($value){
-
+        
         $likeStr = str_replace("*","%",$value);
 
         if(!str_starts_with($likeStr,"%")){
@@ -27,6 +29,7 @@ class UserFilters extends QueryFilters {
         });
 
     }
+
 
     public function role($value){
         return $this->builder->where("role", "=" , $value);

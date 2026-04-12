@@ -4,17 +4,15 @@ namespace App\Http\Requests;
 
 use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
-use Illuminate\Validation\Rule;
 
-class UserUpdateRequest extends FormRequest
+class CategoryStoreRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user() && $this->user()->role == UserRole::ADMIN;
     }
 
     /**
@@ -25,10 +23,7 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "sometimes|string|max:100",
-            "email" => ["sometimes", Rule::unique('users', 'email')->ignore($this->route('user') ?? $this->user())],
-            'password' => 'sometimes|string|min:8|confirmed',
-            'role' => ['sometimes', new Enum(UserRole::class)],
+            "name" => "required|string|unique:categories,name",
         ];
     }
 }

@@ -36,12 +36,11 @@ class TicketController extends ApiController
 
             $ticket = Ticket::create($data);
 
-            return $this->success($ticket,"Ticket added successfully");
-
-        }catch(Exception $e){
-            $this->error("error",$e->getMessage());
-        }catch(AuthorizationException $e){
-            $this->error("You are not authorized to create this", $e->getMessage(),401);
+            return $this->success($ticket, "Ticket added successfully");
+        } catch (Exception $e) {
+            $this->error("error", $e->getMessage());
+        } catch (AuthorizationException $e) {
+            $this->error("You are not authorized to create this", $e->getMessage(), 401);
         }
     }
 
@@ -64,13 +63,10 @@ class TicketController extends ApiController
             $ticket->update($request->validated());
 
             return $this->success($ticket, "Ticket updated successfully");
-
-        }catch(NotFoundHttpException $e){
+        } catch (NotFoundHttpException $e) {
 
             return $this->error("Ticket connot be found");
-            
         }
-
     }
 
     public function destroy(Ticket $ticket)
@@ -81,9 +77,23 @@ class TicketController extends ApiController
             $this->isAble("delete", $ticket);
             $ticket->delete();
             return $this->success(null, "Ticket deleted successfully");
-
-        }catch(ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             Log::info("ldkfld");
+        }
+    }
+
+    public function userTickets(TicketFilters $filters)
+    {
+        try{
+            Log::info("dkfdk");
+            $userId = auth()->id();
+            return TicketResource::collection(
+                Ticket::where('user_id', $userId)
+                    ->filter($filters)
+                    ->paginate()
+            );
+        }catch(Exception $e){
+            Log::info($e->getMessage());
         }
     }
 }
