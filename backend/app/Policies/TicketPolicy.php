@@ -10,15 +10,23 @@ use App\Models\User;
 class TicketPolicy
 {
 
-    public function __construct()
+    public function __construct() {}
+
+    public function view(User $user, Ticket $ticket)
     {
-        
+        if ($user->tokenCan(Abilities::ViewTicket)) {
+            return true;
+        } else if ($user->tokenCan(Abilities::ViewOwnTicket)) {
+            return $user->id === $ticket->user_id || $user->id === $ticket->agent_id;
+        }
+        return false;
     }
 
-    public function update(User $user,Ticket $ticket){
-        if($user->tokenCan(Abilities::UpdateTicket)){
+    public function update(User $user, Ticket $ticket)
+    {
+        if ($user->tokenCan(Abilities::UpdateTicket)) {
             return true;
-        }else if ($user->tokenCan(Abilities::UpdateOwnTicket)){
+        } else if ($user->tokenCan(Abilities::UpdateOwnTicket)) {
             return $user->id === $ticket->user_id;
         }
         return false;
@@ -28,7 +36,7 @@ class TicketPolicy
     {
         return $user->tokenCan(Abilities::CreateOwnTicket) || $user->tokenCan(Abilities::CreateTicket);
     }
-    
+
     public function delete(User $user, Ticket $ticket)
     {
         if ($user->tokenCan(Abilities::DeleteTicket)) {

@@ -31,7 +31,6 @@ class TicketStoreRequest extends ApiRequest
             "description" => "required|string",
             'status' => ['required', new Enum(StatusEnum::class)],
             'priority' => ['required', new Enum(PriorityEnum::class)],
-            "user_id" => "required|integer|exists:users,id",
             "category_id" => "required|integer|exists:categories,id"
         ];
     }

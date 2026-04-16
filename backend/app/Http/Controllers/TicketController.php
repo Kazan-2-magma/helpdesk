@@ -34,6 +34,8 @@ class TicketController extends ApiController
 
             $data = $request->validated();
 
+            $data["user_id"] = auth()->id();
+
             $ticket = Ticket::create($data);
 
             return $this->success($ticket, "Ticket added successfully");
@@ -47,7 +49,13 @@ class TicketController extends ApiController
     public function show(Ticket $ticket)
     {
         if ($this->include("user")) {
-            return new TicketResource($ticket->load("user"));
+            $ticket = $ticket->load("user");
+        }
+
+        if ($this->include("comments")) {
+            $ticket = $ticket->load(["comments" => function ($query) {
+                $query->with("user")->with("attachments");
+            }]);
         }
 
         return new TicketResource($ticket);
@@ -84,7 +92,7 @@ class TicketController extends ApiController
 
     public function userTickets(TicketFilters $filters)
     {
-        try{
+        try {
             Log::info("dkfdk");
             $userId = auth()->id();
             return TicketResource::collection(
@@ -92,7 +100,7 @@ class TicketController extends ApiController
                     ->filter($filters)
                     ->paginate()
             );
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::info($e->getMessage());
         }
     }

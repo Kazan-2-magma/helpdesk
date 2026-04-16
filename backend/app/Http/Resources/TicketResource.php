@@ -7,6 +7,7 @@ use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\CommentResource;
 
 class TicketResource extends JsonResource
 {
@@ -24,6 +25,7 @@ class TicketResource extends JsonResource
             "priority" => $this->priority,
             "status" => $this->status,
             "created" => Carbon::parse($this->created_at)->format("d M,Y"),
+            "comments" => CommentResource::collection($this->whenLoaded("comments")),
             // "totalTickets" => count(Ticket::all()),
             // "totalOpen" => count(Ticket::where("status",StatusEnum::OPEN)->get()),
             // "totalClosed" => count(Ticket::where("status",StatusEnum::CLOSED)->get()),
