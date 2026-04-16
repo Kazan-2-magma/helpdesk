@@ -6,10 +6,11 @@ export class ApiEndpoints {
     /// ADMIN
     static ADMIN_FAQ = "admin/faqs";
     static ADMIN_USER = "admin/users";
-    static ADMIN_CATEGORY = "admin/categories";
+    static CATEGORY = "categories";
     
     static TICKETS = "tickets";
-
+    
     /// USER
     static USER_TICKETS = "user/userTickets";
+    static USER_COMMENT = "user/comment";
 }

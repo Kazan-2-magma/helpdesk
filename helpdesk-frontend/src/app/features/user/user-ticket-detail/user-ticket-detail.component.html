@@ -1,0 +1,357 @@
+<div class="flex flex-col h-screen bg-gray-50 dark:bg-gray-950">
+  <!-- Header -->
+  <div
+    class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm"
+  >
+    <div class="max-w-6xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <button
+          (click)="goBack()"
+          class="flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 mb-4"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+          Back to Tickets
+        </button>
+      </div>
+
+      <!-- Ticket Info -->
+      <div *ngIf="ticket && !loading" class="flex items-start justify-between">
+        <div class="flex-1">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ ticket.title }}
+          </h1>
+          <p class="text-gray-600 dark:text-gray-400 mt-2">
+            {{ ticket.description }}
+          </p>
+        </div>
+        <div class="flex gap-2 ml-4">
+          <span
+            [ngClass]="getStatusColor(ticket.status)"
+            class="text-xs px-3 py-1 rounded-full font-medium whitespace-nowrap"
+          >
+            {{ ticket.status }}
+          </span>
+          <span
+            [ngClass]="getPriorityColor(ticket.priority)"
+            class="text-xs px-3 py-1 rounded-full font-medium whitespace-nowrap"
+          >
+            {{ ticket.priority }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Ticket Meta -->
+      <div
+        *ngIf="ticket && !loading"
+        class="flex gap-6 mt-4 text-sm text-gray-600 dark:text-gray-400"
+      >
+        <span>Created: {{ ticket.created | date: "short" }}</span>
+        <!-- <span *ngIf="ticket.category">Category: {{ ticket.category }}</span> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center flex-1">
+    <div class="text-center">
+      <div
+        class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 animate-spin mb-4"
+      >
+        <svg
+          class="w-6 h-6 text-blue-600 dark:text-blue-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 10V3L4 14h7v7l9-11h-7z"
+          ></path>
+        </svg>
+      </div>
+      <p class="text-gray-600 dark:text-gray-400">Loading ticket details...</p>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div
+    *ngIf="error && !loading"
+    class="flex items-center justify-center flex-1"
+  >
+    <div
+      class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center"
+    >
+      <p class="text-red-800 dark:text-red-200">{{ error }}</p>
+    </div>
+  </div>
+
+  <!-- Chat Area -->
+  <div *ngIf="!loading && !error" class="flex-1 overflow-y-auto">
+    <div class="max-w-6xl mx-auto px-4 py-6 space-y-4">
+      <!-- Initial Message -->
+      <div class="flex justify-end">
+        <div
+          class="bg-blue-600 text-white rounded-lg rounded-tr-none p-4 max-w-xs md:max-w-sm"
+        >
+          <p class="text-sm">{{ ticket?.description }}</p>
+          <span class="text-xs text-blue-200 mt-2 block">
+            {{ ticket?.created | date: "short" }} - You
+          </span>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div
+        *ngFor="let comment of comments"
+        [ngClass]="
+          isAgentComment(comment) ? 'flex justify-start' : 'flex justify-end'
+        "
+      >
+        <div
+          [ngClass]="
+            isAgentComment(comment)
+              ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg rounded-tl-none'
+              : 'bg-blue-600 text-white rounded-lg rounded-tr-none'
+          "
+          class="p-4 max-w-xs md:max-w-sm"
+        >
+          <div
+            [innerHTML]="comment.message"
+            class="text-sm prose prose-sm dark:prose-invert max-w-none"
+          ></div>
+
+          <!-- Attachments -->
+          <div
+            *ngIf="comment.attachments && comment.attachments.length > 0"
+            class="mt-3 space-y-2"
+          >
+            <p class="text-xs font-semibold opacity-75">Attachments:</p>
+            <div
+              *ngFor="let attachment of comment.attachments"
+              class="flex items-center gap-2 bg-black/10 dark:bg-white/10 p-2 rounded text-xs"
+            >
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                ></path>
+              </svg>
+              <a
+                [href]="attachment.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="underline truncate hover:opacity-75"
+              >
+                {{ attachment.filename }}
+              </a>
+            </div>
+          </div>
+
+          <span
+            [ngClass]="
+              isAgentComment(comment)
+                ? 'text-gray-600 dark:text-gray-400'
+                : 'text-blue-200'
+            "
+            class="text-xs mt-3 block"
+          >
+            {{ comment.created_at | date: "short" }} - {{ comment.user_name }}
+            <span *ngIf="isAgentComment(comment)" class="font-semibold"
+              >(Agent)</span
+            >
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reply Form -->
+  <div
+    *ngIf="!loading && !error"
+    class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
+  >
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <form
+        [formGroup]="replyForm"
+        (ngSubmit)="submitReply()"
+        class="space-y-4"
+      >
+        <!-- Rich Text Editor Toolbar -->
+        <div
+          class="flex flex-wrap gap-2 p-3 bg-gray-100 dark:bg-gray-800 rounded-t-lg border border-b-0 border-gray-300 dark:border-gray-700"
+        >
+          <button
+            type="button"
+            (click)="execCommand('bold')"
+            title="Bold"
+            class="p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+          >
+            <strong>B</strong>
+          </button>
+          <button
+            type="button"
+            (click)="execCommand('italic')"
+            title="Italic"
+            class="p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+          >
+            <em>I</em>
+          </button>
+          <button
+            type="button"
+            (click)="execCommand('underline')"
+            title="Underline"
+            class="p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+          >
+            <u>U</u>
+          </button>
+          <div class="w-px bg-gray-300 dark:bg-gray-600"></div>
+          <button
+            type="button"
+            (click)="execCommand('insertUnorderedList')"
+            title="Bullet List"
+            class="p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"></path>
+            </svg>
+          </button>
+          <button
+            type="button"
+            (click)="execCommand('insertOrderedList')"
+            title="Numbered List"
+            class="p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <text x="3" y="15" font-size="12" font-weight="bold">1.</text>
+              <text x="3" y="30" font-size="12" font-weight="bold">2.</text>
+              <line x1="25" y1="10" x2="45" y2="10" stroke="currentColor" />
+              <line x1="25" y1="25" x2="45" y2="25" stroke="currentColor" />
+            </svg>
+          </button>
+          <div class="w-px bg-gray-300 dark:bg-gray-600"></div>
+          <button
+            type="button"
+            (click)="triggerFileInput()"
+            title="Attach File"
+            class="p-2 rounded hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 flex items-center gap-1"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              ></path>
+            </svg>
+            Attach
+          </button>
+        </div>
+
+        <!-- Rich Text Area -->
+        <div
+          contenteditable="true"
+          [(ngModel)]="editorContent"
+          name="editor"
+          class="w-full px-4 py-3 min-h-32 border border-gray-300 dark:border-gray-700 rounded-b-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+          style="white-space: pre-wrap; word-wrap: break-word"
+        ></div>
+
+        <!-- File Input (Hidden) -->
+        <input
+          #fileInput
+          type="file"
+          multiple
+          (change)="onFileSelected($event)"
+          class="hidden"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif"
+        />
+
+        <!-- Selected Files Display -->
+        <div *ngIf="selectedFiles.length > 0" class="space-y-2">
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Attached Files:
+          </p>
+          <div class="space-y-2">
+            <div
+              *ngFor="let file of selectedFiles; let i = index"
+              class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded border border-gray-200 dark:border-gray-700"
+            >
+              <div class="flex items-center gap-2 flex-1">
+                <svg
+                  class="w-4 h-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  ></path>
+                </svg>
+                <div class="flex-1 min-w-0">
+                  <p
+                    class="text-sm font-medium text-gray-900 dark:text-white truncate"
+                  >
+                    {{ file.name }}
+                  </p>
+                  <p class="text-xs text-gray-500">
+                    {{ formatFileSize(file.size) }}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                (click)="removeFile(i)"
+                class="ml-2 text-red-500 hover:text-red-700 p-1"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex gap-3">
+          <button
+            type="submit"
+            [disabled]="submitting"
+            class="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+          >
+            {{ submitting ? "Sending..." : "Send Message" }}
+          </button>
+          <button
+            type="button"
+            (click)="editorContent = ''; selectedFiles = []"
+            class="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+          >
+            Clear
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

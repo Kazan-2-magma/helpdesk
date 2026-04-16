@@ -32,6 +32,7 @@ export class UserTicketsComponent implements OnInit {
   tickets: Ticket[] = [];
   categories: Category[] = [];
   ticketForm!: FormGroup;
+  
   showCreateForm = false;
   loading = true;
   loadingError = "";
@@ -48,6 +49,7 @@ export class UserTicketsComponent implements OnInit {
       title: ["", [Validators.required, Validators.minLength(5)]],
       description: ["", [Validators.required, Validators.minLength(10)]],
       category_id: ["", Validators.required],
+      status : "open",
       priority: ["low", Validators.required],
     });
   }
@@ -69,33 +71,49 @@ export class UserTicketsComponent implements OnInit {
     });
   }
 
+  loadCategories(){
+    this.categoryService.getCategories().subscribe({
+      next : (data) =>{
+        this.categories = data.data || [];
+      },
+      error : (err) => {
+        this.loadingError = "Failed to Load Categories"
+      }
+    })
+  }
+
   createTicket() {
     if (!this.ticketForm.valid) return;
 
-    // this.ticketService.addTicket(this.ticketForm.value).subscribe({
-    //   next: () => {
-    //     this.messageService.add({
-    //       severity: "success",
-    //       summary: "Ticket Created",
-    //       detail: "Your support ticket has been created successfully.",
-    //     });
-    //     this.ticketForm.reset();
-    //     this.showCreateForm = false;
-    //     this.loadTickets();
-    //   },
-    //   error: (err) => {
-    //     console.error("Error creating ticket:", err);
-    //     this.messageService.add({
-    //       severity: "error",
-    //       summary: "Error",
-    //       detail: "Failed to create ticket.",
-    //     });
-    //   },
-    // });
+    console.log(this.ticketForm.value);
+    
+
+    this.ticketService.addTicket(this.ticketForm.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: "success",
+          summary: "Ticket Created",
+          detail: "Your support ticket has been created successfully.",
+        });
+        this.ticketForm.reset();
+        this.showCreateForm = false;
+        this.loadTickets();
+      },
+      error: (err) => {
+        console.error("Error creating ticket:", err);
+        this.messageService.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Failed to create ticket.",
+        });
+      },
+    });
   }
 
   getFilteredTickets() {
     return this.tickets.filter((ticket) => {
+      console.log(ticket);
+      
       const matchesSearch =
         ticket.title.toLowerCase().includes(this.searchText.toLowerCase()) ||
         ticket.description
@@ -134,6 +152,7 @@ export class UserTicketsComponent implements OnInit {
   }
 
   toggleCreateForm() {
+    this.loadCategories();
     this.showCreateForm = !this.showCreateForm;
     if (!this.showCreateForm) {
       this.ticketForm.reset();
@@ -141,6 +160,8 @@ export class UserTicketsComponent implements OnInit {
   }
 
   viewTicketDetail(ticketId: number) {
+    console.log("click");
+    
     this.router.navigate(["/user/tickets", ticketId]);
   }
 }

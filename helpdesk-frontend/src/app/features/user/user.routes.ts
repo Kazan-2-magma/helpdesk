@@ -3,6 +3,7 @@ import { UserTicketsComponent } from "./user-tickets/user-tickets.component";
 import { UserLayoutComponent } from "./user-layout/user-layout.component";
 import { UserDashboardComponent } from "./user-dashboard/user-dashboard.component";
 import { UserFaqsComponent } from "./user-faqs/user-faqs.component";
+import { UserTicketDetailComponent } from "./user-ticket-detail/user-ticket-detail.component";
 
 export const USER_ROUTES: Routes = [
   {
@@ -16,6 +17,10 @@ export const USER_ROUTES: Routes = [
       {
         path: "tickets",
         component: UserTicketsComponent,
+      },
+      {
+        path: "tickets/:id",
+        component: UserTicketDetailComponent,
       },
       {
         path: "faqs",
