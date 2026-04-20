@@ -20,10 +20,12 @@ Route::middleware("auth")->prefix("user")->group(function () {
     Route::apiResource("faqs", FaqController::class);
     Route::post("tickets/{ticket}/comments", [CommentController::class, 'store']);
     Route::get("userTickets", [TicketController::class, 'userTickets']);
-    Route::apiResource("comment",CommentController::class);
+    Route::apiResource("comment", CommentController::class);
 });
 
-
+Route::middleware("agent")->prefix("agent")->group(function () {
+    Route::get("tickets", [TicketController::class, 'agentTickets']);
+});
 
 Route::apiResource("tickets", TicketController::class);
 Route::apiResource("categories", CategoryController::class);

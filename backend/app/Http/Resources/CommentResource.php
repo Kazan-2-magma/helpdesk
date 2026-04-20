@@ -20,7 +20,6 @@ class CommentResource extends JsonResource
             "message" => $this->message,
             "user_id" => $this->user_id,
             "ticket_id" => $this->ticket_id,
-            "user_name" => $this->user?->name,
             "user" => new UserResource($this->whenLoaded("user")),
             "attachments" => AttachmentResource::collection($this->whenLoaded("attachments")),
             "created_at" => $this->created_at->toIso8601String(),

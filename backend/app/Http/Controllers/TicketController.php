@@ -104,4 +104,18 @@ class TicketController extends ApiController
             Log::info($e->getMessage());
         }
     }
+
+    public function agentTickets(TicketFilters $filters)
+    {
+        try {
+            $agentId = auth()->id();
+            return TicketResource::collection(
+                Ticket::where('agent_id', $agentId)
+                    ->filter($filters)
+                    ->paginate()
+            );
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+        }
+    }
 }
