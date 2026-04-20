@@ -5,7 +5,7 @@ import {
   ViewChild,
   ElementRef,
 } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, formatDate } from "@angular/common";
 import {
   FormsModule,
   FormBuilder,
@@ -47,6 +47,7 @@ interface Attachment {
 })
 export class UserTicketDetailComponent implements OnInit {
   @ViewChild("fileInput") fileInput!: ElementRef;
+  @ViewChild("editorDiv") editorDiv!: ElementRef<HTMLDivElement>;
 
   private ticketService = inject(UserTicketService);
   private route = inject(ActivatedRoute);
@@ -110,6 +111,16 @@ export class UserTicketDetailComponent implements OnInit {
     document.execCommand(command, false);
   }
 
+  onEditorInput(event: Event): void {
+    const target = event.target as HTMLElement;
+    this.editorContent = target.innerHTML || "";
+    if (this.replyForm) {
+      this.replyForm.get("message")?.setValue(this.editorContent, {
+        emitEvent: false,
+      });
+    }
+  }
+
   loadTicketDetail(): void {
     const ticketId = this.route.snapshot.paramMap.get("id");
     if (!ticketId) {
@@ -133,7 +144,6 @@ export class UserTicketDetailComponent implements OnInit {
   }
 
   submitReply(): void {
-    
     // if (!this.replyForm.valid || !this.ticket || !this.editorContent.trim()) {
     //   console.log("Click " , this.replyForm , this.ticket,this.editorContent);
     //   return;
@@ -142,18 +152,42 @@ export class UserTicketDetailComponent implements OnInit {
     this.submitting = true;
     const ticketId = this.route.snapshot.paramMap.get("id");
 
+    const message =
+      this.editorContent.trim() ||
+      this.editorDiv?.nativeElement?.innerText?.trim() ||
+      "";
+
+    if (!ticketId) {
+      this.error = "Invalid ticket ID.";
+      this.submitting = false;
+      return;
+    }
+
+    if (!message) {
+      this.error = "Please enter a message before sending.";
+      this.submitting = false;
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("message", this.editorContent);
+    formData.append("message", message);
+    formData.append("ticket_id", ticketId);
 
     this.selectedFiles.forEach((file) => {
       formData.append("attachments[]", file);
     });
 
-    
-    this.ticketService.addComment(+ticketId!, formData).subscribe({
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    this.ticketService.addComment(+ticketId, formData).subscribe({
       next: (response: any) => {
         this.comments.push(response.data);
         this.editorContent = "";
+        if (this.editorDiv?.nativeElement) {
+          this.editorDiv.nativeElement.innerHTML = "";
+        }
         this.selectedFiles = [];
         this.replyForm.reset();
         this.submitting = false;
@@ -167,7 +201,10 @@ export class UserTicketDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(["/user/tickets"]);
+    const returnPath = this.router.url.startsWith("/agent/")
+      ? "/agent/tickets"
+      : "/user/tickets";
+    this.router.navigate([returnPath]);
   }
 
   isAgentComment(comment: CommentData): boolean {

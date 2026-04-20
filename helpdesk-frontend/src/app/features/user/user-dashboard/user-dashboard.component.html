@@ -1,1 +1,379 @@
-<p>user-dashboard works!</p>
+<div
+  class="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950"
+>
+  <!-- Header -->
+  <div
+    class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+          Support Dashboard
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-1">
+          Welcome back! Here's your support overview
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 overflow-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Loading State -->
+      <div *ngIf="loading" class="flex items-center justify-center h-full">
+        <div class="text-center">
+          <div
+            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 animate-spin mb-4"
+          >
+            <svg
+              class="w-8 h-8 text-blue-600 dark:text-blue-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              ></path>
+            </svg>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400">
+            Loading your dashboard...
+          </p>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div *ngIf="!loading" class="space-y-8">
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Total Tickets -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Total Tickets
+                </p>
+                <p
+                  class="text-3xl font-bold text-gray-900 dark:text-white mt-2"
+                >
+                  {{ stats.total }}
+                </p>
+              </div>
+              <div
+                class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-blue-600 dark:text-blue-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Open Tickets -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Open Tickets
+                </p>
+                <p
+                  class="text-3xl font-bold text-orange-600 dark:text-orange-400 mt-2"
+                >
+                  {{ stats.open }}
+                </p>
+              </div>
+              <div
+                class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-orange-600 dark:text-orange-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- In Progress -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  In Progress
+                </p>
+                <p
+                  class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2"
+                >
+                  {{ stats.inProgress }}
+                </p>
+              </div>
+              <div
+                class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-yellow-600 dark:text-yellow-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resolved Tickets -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Resolved
+                </p>
+                <p
+                  class="text-3xl font-bold text-green-600 dark:text-green-400 mt-2"
+                >
+                  {{ stats.resolved }}
+                </p>
+              </div>
+              <div
+                class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-green-600 dark:text-green-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Recent Tickets -->
+          <div class="lg:col-span-2">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+            >
+              <!-- Header -->
+              <div
+                class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between"
+              >
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                  Recent Tickets
+                </h2>
+                <a
+                  routerLink="/user/tickets"
+                  class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium"
+                >
+                  View All →
+                </a>
+              </div>
+
+              <!-- Content -->
+              <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                <div
+                  *ngIf="recentTickets.length === 0"
+                  class="px-6 py-12 text-center"
+                >
+                  <svg
+                    class="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    ></path>
+                  </svg>
+                  <p class="text-gray-500 dark:text-gray-400">
+                    No tickets yet. Create one to get started!
+                  </p>
+                </div>
+
+                <div
+                  *ngFor="let ticket of recentTickets"
+                  class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer group"
+                  (click)="navigateToTicket(ticket.id)"
+                >
+                  <div class="flex items-start justify-between mb-2">
+                    <div class="flex-1">
+                      <h3
+                        class="font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+                      >
+                        {{ ticket.title }}
+                      </h3>
+                      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        {{ ticket.description | slice: 0 : 60 }}...
+                      </p>
+                    </div>
+                    <div class="ml-4">
+                      <span
+                        [ngClass]="getStatusBadgeClass(ticket.status)"
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      >
+                        {{ ticket.status | titlecase }}
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400"
+                  >
+                    <!-- <span>{{ ticket.category }}</span> -->
+                    <span>{{ ticket.created | date: "short" }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Priority Distribution -->
+          <div class="space-y-6">
+            <!-- Quick Actions -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+            >
+              <h3
+                class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+              >
+                Quick Actions
+              </h3>
+              <div class="space-y-3">
+                <button
+                  routerLink="/user/tickets"
+                  class="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    ></path>
+                  </svg>
+                  <span class="font-medium">Create Ticket</span>
+                </button>
+                <button
+                  routerLink="/user/faqs"
+                  class="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span class="font-medium">View FAQs</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Priority Distribution -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+            >
+              <h3
+                class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+              >
+                Priority Distribution
+              </h3>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                    <span class="text-sm text-gray-600 dark:text-gray-400"
+                      >High</span
+                    >
+                  </div>
+                  <span class="font-semibold text-gray-900 dark:text-white">{{
+                    stats.highPriority
+                  }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                    <span class="text-sm text-gray-600 dark:text-gray-400"
+                      >Medium</span
+                    >
+                  </div>
+                  <span class="font-semibold text-gray-900 dark:text-white">{{
+                    stats.mediumPriority
+                  }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span class="text-sm text-gray-600 dark:text-gray-400"
+                      >Low</span
+                    >
+                  </div>
+                  <span class="font-semibold text-gray-900 dark:text-white">{{
+                    stats.lowPriority
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

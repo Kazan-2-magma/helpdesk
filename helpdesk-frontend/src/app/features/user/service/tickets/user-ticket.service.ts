@@ -31,7 +31,8 @@ export class UserTicketService {
 
   addComment(ticketId: number, data: any): Observable<JsonApiResponse> {
     return this.apiService.post(
-      `${ApiEndpoints.USER_COMMENT}/${ticketId}/comments`,
+      // `${ApiEndpoints.USER_COMMENT}/${ticketId}/comments`,
+      `${ApiEndpoints.USER_COMMENT}`,
       data,
     );
   }
