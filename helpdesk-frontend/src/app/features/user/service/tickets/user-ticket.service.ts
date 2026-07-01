@@ -41,6 +41,10 @@ export class UserTicketService {
     return this.apiService.post(`${ApiEndpoints.TICKETS}`, data);
   }
 
+  updateTicket(ticketId: number, data: any): Observable<JsonApiResponse> {
+    return this.apiService.put(`${ApiEndpoints.TICKETS}/${ticketId}`, data);
+  }
+
   addUser(data: any): Observable<JsonApiResponse> {
     return this.apiService.post(`${ApiEndpoints.ADMIN_USER}`, data);
   }

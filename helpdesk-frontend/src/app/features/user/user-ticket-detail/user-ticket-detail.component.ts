@@ -16,6 +16,8 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserTicketService } from "../service/tickets/user-ticket.service";
 import { Ticket } from "../../../shared/interfaces";
+import { AuthService } from "../../../core/services/auth.service";
+import { ROLE } from "../../../shared/enum/enumes";
 
 interface CommentData {
   id: number;
@@ -53,6 +55,7 @@ export class UserTicketDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private formBuilder = inject(FormBuilder);
+  private authService = inject(AuthService);
 
   ticket: Ticket | null = null;
   comments: CommentData[] = [];
@@ -60,6 +63,9 @@ export class UserTicketDetailComponent implements OnInit {
   loading = true;
   submitting = false;
   error = "";
+  isAgent = false;
+  selectedStatus: "open" | "resolved" | "closed" = "open";
+  updatingStatus = false;
   selectedFiles: File[] = [];
   editorContent = "";
   quillModules = {
@@ -74,6 +80,7 @@ export class UserTicketDetailComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.isAgent = this.authService.getUserRole() === ROLE.AGENT;
     this.initializeForm();
     this.loadTicketDetail();
   }
@@ -133,6 +140,7 @@ export class UserTicketDetailComponent implements OnInit {
       next: (response: any) => {
         this.ticket = response.data;
         this.comments = response.data.comments || [];
+        this.selectedStatus = response.data?.status ?? "open";
         this.loading = false;
       },
       error: (err) => {
@@ -141,6 +149,27 @@ export class UserTicketDetailComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  updateStatus(): void {
+    if (!this.ticket) return;
+
+    this.updatingStatus = true;
+    this.ticketService
+      .updateTicket(this.ticket.id, { status: this.selectedStatus })
+      .subscribe({
+        next: (response: any) => {
+          if (this.ticket) {
+            this.ticket.status = response?.data?.status ?? this.selectedStatus;
+          }
+          this.updatingStatus = false;
+        },
+        error: (err) => {
+          console.error("Error updating status:", err);
+          this.error = "Failed to update ticket status";
+          this.updatingStatus = false;
+        },
+      });
   }
 
   submitReply(): void {

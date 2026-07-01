@@ -25,15 +25,12 @@ class TicketUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            
             "title" => "sometimes|required|string",
             "description" => "sometimes|required|string",
-            'status' => ["sometimes",'required', new Enum(StatusEnum::class)],
-            'priority' => ["sometimes",'required', new Enum(PriorityEnum::class)],
-            "category_id" => "sometimes|required|exists:categories,id",
-            // "user_id" => "required|integer|exists:users,id",
-            "category_id" => "sometimes|required|integer|exists:categories,id"
+            'status' => ["sometimes", 'required', new Enum(StatusEnum::class)],
+            'priority' => ["sometimes", 'required', new Enum(PriorityEnum::class)],
+            "category_id" => "sometimes|required|integer|exists:categories,id",
+            "agent_id" => "sometimes|nullable|integer|exists:users,id",
         ];
-
     }
 }

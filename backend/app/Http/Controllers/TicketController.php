@@ -38,11 +38,13 @@ class TicketController extends ApiController
 
             $ticket = Ticket::create($data);
 
-            return $this->success($ticket, "Ticket added successfully");
-        } catch (Exception $e) {
-            $this->error("error", $e->getMessage());
+            $ticket->load(["user", "category", "agent"]);
+
+            return $this->success(new TicketResource($ticket), "Ticket added successfully", 201);
         } catch (AuthorizationException $e) {
-            $this->error("You are not authorized to create this", $e->getMessage(), 401);
+            return $this->error("You are not authorized to create this", $e->getMessage(), 403);
+        } catch (Exception $e) {
+            return $this->error("error", $e->getMessage());
         }
     }
 
@@ -70,10 +72,13 @@ class TicketController extends ApiController
 
             $ticket->update($request->validated());
 
-            return $this->success($ticket, "Ticket updated successfully");
-        } catch (NotFoundHttpException $e) {
+            $ticket->load(["user", "category", "agent"]);
 
-            return $this->error("Ticket connot be found");
+            return $this->success(new TicketResource($ticket), "Ticket updated successfully");
+        } catch (AuthorizationException $e) {
+            return $this->error("You are not authorized to update this ticket", $e->getMessage(), 403);
+        } catch (NotFoundHttpException $e) {
+            return $this->error("Ticket cannot be found");
         }
     }
 

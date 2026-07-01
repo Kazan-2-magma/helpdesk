@@ -16,5 +16,5 @@ import { RouterModule } from '@angular/router';
 export class AppComponent{
 
   
-  title = 'Angular Ecommerce Dashboard | TailAdmin';
+  title = 'HelpDesk | Support Ticketing';
 }

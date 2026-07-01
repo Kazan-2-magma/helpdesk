@@ -60,6 +60,31 @@
         <span>Created: {{ ticket.created | date: "short" }}</span>
         <!-- <span *ngIf="ticket.category">Category: {{ ticket.category }}</span> -->
       </div>
+
+      <!-- Agent status control -->
+      <div
+        *ngIf="ticket && !loading && isAgent"
+        class="mt-4 flex flex-wrap items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-3"
+      >
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Update status:
+        </label>
+        <select
+          [(ngModel)]="selectedStatus"
+          class="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-800 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+        >
+          <option value="open">Open</option>
+          <option value="resolved">Resolved</option>
+          <option value="closed">Closed</option>
+        </select>
+        <button
+          (click)="updateStatus()"
+          [disabled]="updatingStatus || selectedStatus === ticket.status"
+          class="rounded-lg bg-brand-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50"
+        >
+          {{ updatingStatus ? "Saving..." : "Save" }}
+        </button>
+      </div>
     </div>
   </div>
 

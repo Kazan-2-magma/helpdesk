@@ -26,6 +26,8 @@ class TicketPolicy
     {
         if ($user->tokenCan(Abilities::UpdateTicket)) {
             return true;
+        } else if ($user->tokenCan(Abilities::UpdateAssignedTicket) && $user->id === $ticket->agent_id) {
+            return true;
         } else if ($user->tokenCan(Abilities::UpdateOwnTicket)) {
             return $user->id === $ticket->user_id;
         }

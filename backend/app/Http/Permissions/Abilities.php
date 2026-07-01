@@ -14,9 +14,13 @@ final class Abilities
     public const ViewTicket = "ticket:view";
 
     public const CreateOwnTicket = "ticket:own:create";
-    public const UpdateOwnTicket = "ticket:own:create";
-    public const DeleteOwnTicket = "ticket:own:create";
+    public const UpdateOwnTicket = "ticket:own:update";
+    public const DeleteOwnTicket = "ticket:own:delete";
     public const ViewOwnTicket = "ticket:own:view";
+
+    // Agents can update / view tickets assigned to them.
+    public const UpdateAssignedTicket = "ticket:assigned:update";
+    public const ViewAssignedTicket = "ticket:assigned:view";
 
     public const CreateFaq = "faq:create";
     public const UpdateFaq = "faq:update";
@@ -51,6 +55,9 @@ final class Abilities
         } else if ($user->role === UserRole::AGENT) {
             return [
                 self::ViewTicket,
+                self::ViewAssignedTicket,
+                self::UpdateAssignedTicket,
+                self::ViewCategory,
             ];
         } else {
             return [

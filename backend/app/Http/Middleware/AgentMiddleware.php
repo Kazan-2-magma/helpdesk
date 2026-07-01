@@ -20,7 +20,7 @@ class AgentMiddleware
     {
         $user = $request->user();
 
-        if(!$user || $user->role !== UserRole::AGENT->value){
+        if(!$user || $user->role !== UserRole::AGENT){
             return $this->error(errors:"unauthorized",statusCode:401);
         }
         return $next($request);
