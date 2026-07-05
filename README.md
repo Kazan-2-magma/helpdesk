@@ -5,6 +5,9 @@
 Control your PC keyboard and mouse directly from your phone.
 This project combines a Go backend (using RobotGo) with a Flutter mobile app to give you remote control over your device.
 
+
+---
+
 **A role-based support & ticketing platform** — a Laravel 10 REST API backend paired with an Angular 20 (TailAdmin) frontend.
 
 Users open support tickets, agents resolve the tickets assigned to them, and admins triage everything: users, agents, categories, FAQs and ticket assignment.
